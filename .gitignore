@@ -1,0 +1,9 @@
+# Melange/apko artifacts
+melange.rsa
+melange.rsa.pub
+packages/
+output.tar
+
+# Cosign private key (NEVER commit)
+cosign.key
+cosign.exe

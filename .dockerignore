@@ -1,0 +1,26 @@
+# Build artifacts
+.git
+.gitignore
+.dockerignore
+
+# Security material — NEVER ship into images
+cosign.*
+*.key
+*.pub
+
+# Scan reports and SBOMs
+scan-*.txt
+sbom-*.spdx.json
+
+# Documentation and presentation
+*.md
+*.html
+
+# Kubernetes manifests
+k8s-*.yaml
+
+# Melange/apko artifacts
+melange.rsa
+melange.rsa.pub
+packages/
+output.tar

@@ -1,0 +1,31 @@
+# Dockerfile.chainguard (The "Solution" - Zero CVE Distroless)
+# Multi-stage build targeting Chainguard's static distroless image.
+# No shell, no package manager, no OS utilities — binary only.
+FROM golang:1.25 AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Optimized build: static binary, stripped symbols
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+RUN go build -ldflags="-s -w" -o hello-app .
+
+# Final stage: Chainguard Static (No shell, no package manager, zero CVEs)
+FROM cgr.dev/chainguard/static:latest
+
+LABEL org.opencontainers.image.title="go-app-chainguard"
+LABEL org.opencontainers.image.description="Distroless zero-CVE deployment using Chainguard static base"
+LABEL org.opencontainers.image.authors="Pankaj"
+
+WORKDIR /app
+COPY --from=builder /app/hello-app .
+
+EXPOSE 8080
+
+# NOTE: HEALTHCHECK is intentionally omitted for the distroless image.
+# There is no shell or HTTP client available to run a health check command.
+# Health checking is delegated to Kubernetes livenessProbe/readinessProbe
+# (see k8s-deployment.yaml), which is the production best practice.
+
+ENTRYPOINT ["./hello-app"]

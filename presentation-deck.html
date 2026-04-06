@@ -1,0 +1,627 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Chainguard Solutions Engineer — Technical Presentation</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/white.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cg-green: #00c853;
+            --cg-dark: #1a1a2e;
+            --cg-gray: #2d2d44;
+            --cg-light: #f5f5f5;
+            --cg-accent: #00e676;
+        }
+
+        .reveal {
+            font-family: 'Inter', sans-serif;
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            text-transform: none;
+            font-weight: 700;
+            color: var(--cg-dark);
+        }
+        .reveal h2 {
+            font-size: 1.6em;
+            margin-bottom: 0.6em;
+        }
+        .reveal h3 {
+            font-size: 1.1em;
+            color: var(--cg-gray);
+        }
+        .reveal pre {
+            box-shadow: none;
+            font-size: 0.48em;
+        }
+        .reveal section {
+            text-align: left;
+        }
+        .reveal ul, .reveal ol {
+            font-size: 0.75em;
+        }
+        .reveal li {
+            margin-bottom: 0.4em;
+        }
+        .reveal table {
+            font-size: 0.6em;
+            margin: 0 auto;
+        }
+        .reveal table th {
+            background: var(--cg-dark);
+            color: white;
+            padding: 8px 12px;
+        }
+        .reveal table td {
+            padding: 6px 12px;
+        }
+
+        /* Custom slide backgrounds */
+        .title-slide {
+            background: linear-gradient(135deg, var(--cg-dark) 0%, #16213e 100%) !important;
+        }
+        .title-slide h2, .title-slide h3, .title-slide p, .title-slide span {
+            color: white !important;
+        }
+        .title-slide .accent {
+            color: var(--cg-green) !important;
+        }
+
+        .section-slide {
+            background: linear-gradient(135deg, var(--cg-green) 0%, #00e676 100%) !important;
+        }
+        .section-slide h2 {
+            color: var(--cg-dark) !important;
+            font-size: 2em;
+        }
+
+        /* Metric cards */
+        .metric-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            flex: 1;
+            max-width: 200px;
+        }
+        .metric-card .number {
+            font-size: 2.2em;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .metric-card .label {
+            font-size: 0.55em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .red { color: #e53935; }
+        .yellow { color: #ffa000; }
+        .green { color: var(--cg-green); }
+
+        /* Pipeline diagram */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 30px 0;
+        }
+        .pipeline-step {
+            background: var(--cg-dark);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.55em;
+            font-weight: 600;
+            text-align: center;
+        }
+        .pipeline-arrow {
+            font-size: 1.2em;
+            color: var(--cg-green);
+            font-weight: 700;
+        }
+
+        /* Key-value list */
+        .kv-list {
+            list-style: none !important;
+            padding: 0 !important;
+        }
+        .kv-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .kv-list .key {
+            font-weight: 600;
+            color: var(--cg-dark);
+        }
+        .kv-list .val {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Comparison blocks */
+        .compare {
+            display: flex;
+            gap: 20px;
+        }
+        .compare-block {
+            flex: 1;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 0.65em;
+        }
+        .compare-bad {
+            background: #ffebee;
+            border-left: 4px solid #e53935;
+        }
+        .compare-good {
+            background: #e8f5e9;
+            border-left: 4px solid var(--cg-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ============== SLIDE 1: TITLE ============== -->
+            <section data-background-color="#1a1a2e">
+                <h2 style="color: white; font-size: 1.8em;">Modernizing Container Security</h2>
+                <h3 style="color: #00c853;">From 756 CVEs to Zero — A Distroless Migration</h3>
+                <br>
+                <p style="color: #aaa; font-size: 0.6em;">Chainguard Solutions Engineer Technical Challenge</p>
+                <p style="color: white; font-size: 0.7em; font-weight: 600;">Pankaj</p>
+                <aside class="notes">
+                    Introduce yourself. Frame the presentation: "I'll walk you through my approach to containerizing a Go application, analyzing its security posture across three different base image strategies, and establishing a complete supply chain trust model."
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 2: AGENDA ============== -->
+            <section>
+                <h2>Agenda</h2>
+                <ol style="font-size: 0.8em;">
+                    <li><strong>Environment & Architecture</strong> — Setup decisions & toolchain</li>
+                    <li><strong>Dockerfile Deep Dive</strong> — Three-stage migration strategy</li>
+                    <li><strong>Vulnerability Analysis</strong> — Before/after scan results</li>
+                    <li><strong>Supply Chain Security</strong> — SBOM, signing, attestation</li>
+                    <li><strong>Kubernetes Deployment</strong> — Security hardening in production</li>
+                    <li><strong>Key Takeaways & Q&A</strong></li>
+                </ol>
+                <aside class="notes">
+                    Quick roadmap of the 30-45 minute session. Mention that you'll do a live walkthrough of the setup after the slides.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 3: ENVIRONMENT SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">1. Environment<br>& Architecture</h2>
+                <aside class="notes">
+                    Section divider. Transition: "Let's start with the infrastructure decisions."
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 4: ENVIRONMENT DETAILS ============== -->
+            <section>
+                <h2>Infrastructure Decisions</h2>
+                <ul class="kv-list">
+                    <li>
+                        <span class="key">OS:</span>
+                        <span class="val">Windows + WSL2 / Docker Desktop — native kernel integration, no VM overhead</span>
+                    </li>
+                    <li>
+                        <span class="key">Local Cluster:</span>
+                        <span class="val"><code>kind</code> — lightweight, spins up in seconds, matches production K8s topology</span>
+                    </li>
+                    <li>
+                        <span class="key">Local Registry:</span>
+                        <span class="val"><code>registry:2</code> on port 5000 — stateless, zero-credential supply chain simulation</span>
+                    </li>
+                </ul>
+                <aside class="notes">
+                    Explain why Kind over Minikube — ephemeral clusters are better for CI/CD simulation. Registry:2 enables fully offline signing workflow.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 5: TOOLCHAIN ============== -->
+            <section>
+                <h2>Security Toolchain</h2>
+                <div class="pipeline">
+                    <div class="pipeline-step">Build<br><small>Docker</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">Scan<br><small>grype</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">SBOM<br><small>syft</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">Sign<br><small>cosign</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">Deploy<br><small>kubectl</small></div>
+                </div>
+                <ul style="font-size: 0.65em; margin-top: 20px;">
+                    <li><strong>grype</strong> — Anchore's high-speed vulnerability scanner; optimized for OS + app layer analysis</li>
+                    <li><strong>syft</strong> — Generates SPDX-2.3 JSON SBOMs; native synergy with grype</li>
+                    <li><strong>cosign</strong> — Sigstore framework for cryptographic image signing and SBOM attestation</li>
+                    <li><strong>govulncheck</strong> — Go-specific vulnerability analysis at the call graph level</li>
+                </ul>
+                <aside class="notes">
+                    Emphasize that this mirrors a real CI/CD pipeline. Each step produces a verifiable artifact. govulncheck goes deeper than grype — it checks if vulnerable code paths are actually reachable.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 6: APP CHOICE ============== -->
+            <section>
+                <h2>Application Design Choice</h2>
+                <div class="compare">
+                    <div class="compare-block compare-bad">
+                        <strong>Original App</strong>
+                        <p>stdlib-only <code>net/http</code></p>
+                        <p>Zero external dependencies</p>
+                        <p>SBOM: nearly empty</p>
+                        <p>Supply chain analysis: minimal</p>
+                    </div>
+                    <div class="compare-block compare-good">
+                        <strong>My Implementation</strong>
+                        <p>Gin framework + validators</p>
+                        <p>15+ transitive dependencies</p>
+                        <p>SBOM: comprehensive</p>
+                        <p>Supply chain analysis: meaningful</p>
+                    </div>
+                </div>
+                <p style="font-size: 0.6em; color: #666; margin-top: 20px; text-align: center;">
+                    <em>A deliberately richer application that better demonstrates real-world SBOM and supply chain challenges.</em>
+                </p>
+                <aside class="notes">
+                    Proactively address why you didn't use the stock app. The original hello-world produces an SBOM with ~2 entries. Real customer workloads have dozens of dependencies — this better shows the value proposition.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 7: DOCKERFILE SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">2. Dockerfile<br>Deep Dive</h2>
+                <aside class="notes">
+                    Transition: "Now let's look at the three containerization strategies and how each impacts security."
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 8: THREE STRATEGIES ============== -->
+            <section>
+                <h2>Three Iterations: Worst → Best</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th>1. Single-Stage</th>
+                            <th>2. Alpine</th>
+                            <th>3. Chainguard</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Base Image</strong></td><td><code>golang:1.25</code></td><td><code>alpine:3.21</code></td><td><code>cgr.dev/chainguard/static</code></td></tr>
+                        <tr><td><strong>Image Size</strong></td><td class="red">1.79 GB</td><td class="yellow">32 MB</td><td class="green"><strong>26 MB</strong></td></tr>
+                        <tr><td><strong>Total CVEs</strong></td><td class="red">756</td><td class="yellow">2 unique</td><td class="green"><strong>0</strong></td></tr>
+                        <tr><td><strong>Shell</strong></td><td>/bin/bash</td><td>/bin/sh</td><td><strong>None</strong></td></tr>
+                        <tr><td><strong>Pkg Manager</strong></td><td>apt</td><td>apk</td><td><strong>None</strong></td></tr>
+                        <tr><td><strong>Health Check</strong></td><td>curl</td><td>wget</td><td><strong>K8s probes</strong></td></tr>
+                    </tbody>
+                </table>
+                <aside class="notes">
+                    Walk through each column. Key insight: 98%+ of the CVEs in the baseline come from OS packages the application never uses. Alpine is better but still carries a shell and package manager — both are exploit tools for attackers.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 9: SIZE COMPARISON ============== -->
+            <section>
+                <h2>The Numbers Tell the Story</h2>
+                <div class="metric-row">
+                    <div class="metric-card">
+                        <div class="number red">1.79 GB</div>
+                        <div class="label">Single Stage</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number yellow">32 MB</div>
+                        <div class="label">Alpine</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number green">26 MB</div>
+                        <div class="label">Chainguard</div>
+                    </div>
+                </div>
+                <div class="metric-row">
+                    <div class="metric-card">
+                        <div class="number red">756</div>
+                        <div class="label">CVEs Found</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number yellow">2</div>
+                        <div class="label">CVEs Found</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="number green">0</div>
+                        <div class="label">CVEs Found</div>
+                    </div>
+                </div>
+                <p style="text-align: center; font-size: 0.6em; color: #666;">
+                    69× smaller image. 100% CVE reduction. Zero patching overhead.
+                </p>
+                <aside class="notes">
+                    Let these numbers sink in. The 69× size reduction means 69× faster pulls during horizontal pod autoscaling. Zero CVEs means zero patching treadmill — this is the core Chainguard value proposition.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 10: DOCKERFILE WALKTHROUGH ============== -->
+            <section>
+                <h2>Chainguard Dockerfile Walkthrough</h2>
+                <pre><code data-trim data-noescape class="language-dockerfile">
+# Build stage — full SDK, discarded after build
+FROM golang:1.25 AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+RUN go build -ldflags="-s -w" -o hello-app .
+
+# Runtime stage — ZERO attack surface
+FROM cgr.dev/chainguard/static:latest
+LABEL org.opencontainers.image.title="go-app-chainguard"
+WORKDIR /app
+COPY --from=builder /app/hello-app .
+EXPOSE 8080
+ENTRYPOINT ["./hello-app"]
+                </code></pre>
+                <ul style="font-size: 0.6em;">
+                    <li><code>CGO_ENABLED=0</code> — fully static binary, no libc dependency</li>
+                    <li><code>-ldflags="-s -w"</code> — strip debug symbols (smaller binary)</li>
+                    <li>No HEALTHCHECK — distroless has no shell; health via K8s probes</li>
+                    <li><code>.dockerignore</code> excludes cosign keys, reports, and docs from context</li>
+                </ul>
+                <aside class="notes">
+                    Walk through each line. Emphasize the multi-stage pattern: builder has everything, runtime has nothing except the binary. The .dockerignore is a security measure — without it, cosign.key would end up in the image layer.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 11: VULN SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">3. Vulnerability<br>Analysis</h2>
+                <aside class="notes">
+                    Transition to the security deep dive.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 12: REMEDIATION NARRATIVE ============== -->
+            <section>
+                <h2>Two-Phase Remediation</h2>
+                <p style="font-size: 0.7em;">Distroless fixes infrastructure. Hygiene fixes code.</p>
+
+                <ul style="font-size: 0.65em;">
+                    <li><strong>OS-level (Baseline / Alpine):</strong> 756 CVEs from unused runtime packages (Python, bash, apt/apk).</li>
+                    <li><strong>Phase 1 (Chainguard):</strong> Reduced OS CVEs to <strong>0</strong>. However, our old app dependencies (Gin v1.8.1) revealed <strong>24 Go CVEs</strong> remaining.</li>
+                    <li><strong>Phase 2 (App Update + Chainguard):</strong> Upgraded Gin/Go dependencies. Combined with Distroless, we reached <span class="green"><strong>0 Total CVEs</strong></span>.</li>
+                </ul>
+                <aside class="notes">
+                    Key message: Migrating to distroless immediately exposed our application-layer technical debt. We proved that true zero-CVE status requires a defense-in-depth approach covering both infrastructure (Chainguard) and application hygiene.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 13: LIVING OFF THE LAND ============== -->
+            <section>
+                <h2>Why Distroless Matters: LotL Attacks</h2>
+                <div class="compare">
+                    <div class="compare-block compare-bad">
+                        <strong>Traditional Image</strong>
+                        <p>Attacker gains RCE → has access to:</p>
+                        <ul>
+                            <li><code>bash</code> — interactive shell</li>
+                            <li><code>curl/wget</code> — data exfiltration</li>
+                            <li><code>python</code> — arbitrary scripting</li>
+                            <li><code>apt/apk</code> — install more tools</li>
+                        </ul>
+                        <p><em>"Living off the Land"</em></p>
+                    </div>
+                    <div class="compare-block compare-good">
+                        <strong>Distroless Image</strong>
+                        <p>Attacker gains RCE → has access to:</p>
+                        <ul>
+                            <li>Nothing.</li>
+                            <li>No shell.</li>
+                            <li>No package manager.</li>
+                            <li>No network tools.</li>
+                        </ul>
+                        <p><em>"Nothing to live off of."</em></p>
+                    </div>
+                </div>
+                <aside class="notes">
+                    This is a powerful talking point for SE conversations. Customers often ask "why can't I just patch faster?" The answer: even a fully patched image with bash and curl is a toolkit for attackers. Distroless removes the toolkit entirely.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 14: SUPPLY CHAIN SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">4. Supply Chain<br>Security</h2>
+                <aside class="notes">
+                    Transition to supply chain.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 15: SUPPLY CHAIN PIPELINE ============== -->
+            <section>
+                <h2>Trust Chain: Build → Deploy</h2>
+                <div class="pipeline">
+                    <div class="pipeline-step">🛠️ Build</div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">📋 SBOM<br><small>syft</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">🔐 Sign<br><small>cosign</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">📎 Attest<br><small>SBOM→OCI</small></div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">✅ Verify<br><small>cosign verify</small></div>
+                </div>
+                <ul style="font-size: 0.65em;">
+                    <li><strong>SBOM Generation:</strong> SPDX-2.3 JSON for all 3 variants — tracks every dependency</li>
+                    <li><strong>Cryptographic Signing:</strong> Each image signed with cosign keypair before registry push</li>
+                    <li><strong>SBOM Attestation:</strong> SBOMs attached to images as in-toto attestations via <code>cosign attest</code></li>
+                    <li><strong>Verification:</strong> <code>cosign verify</code> + <code>cosign verify-attestation</code> validates integrity end-to-end</li>
+                </ul>
+                <p style="font-size: 0.55em; color: #666; text-align: center;">
+                    Production: cosign keys would be managed via KMS (AWS KMS, GCP KMS, Vault)
+                </p>
+                <aside class="notes">
+                    Walk through the pipeline. The key insight: signing prevents image tampering between build and deploy. SBOM attestation creates a verifiable link between what was scanned and what runs. This is what compliance teams need.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 16: SBOM INSIGHTS ============== -->
+            <section>
+                <h2>SBOM: What's Actually in the Image?</h2>
+                <table>
+                    <thead>
+                        <tr><th>Component</th><th>Single-Stage</th><th>Alpine</th><th>Chainguard</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>OS packages</td><td class="red">300+</td><td class="yellow">14</td><td class="green"><strong>3</strong></td></tr>
+                        <tr><td>Go modules</td><td>15</td><td>15</td><td>15</td></tr>
+                        <tr><td>Binary utilities</td><td class="red">bash, curl, python, apt, git…</td><td class="yellow">busybox, apk</td><td class="green"><strong>None</strong></td></tr>
+                        <tr><td>TLS certs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                        <tr><td>Timezone data</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.6em; color: #666; text-align: center; margin-top: 15px;">
+                    The Chainguard image contains <strong>only</strong> the application binary, TLS certificates, and timezone data. Everything else is stripped.
+                </p>
+                <aside class="notes">
+                    SBOMs are the receipts for what's deployed. The difference is striking: 300+ packages vs 3. Each additional package is a potential attack vector. SBOM transparency lets compliance teams audit exactly what runs in production.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 17: K8S SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">5. Kubernetes<br>Security</h2>
+                <aside class="notes">
+                    Transition to deployment and runtime security.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 18: K8S HARDENING ============== -->
+            <section>
+                <h2>Defense-in-Depth Deployment</h2>
+                <pre><code data-trim data-noescape class="language-yaml">
+containers:
+- name: go-app
+  image: go-app-chainguard:v1
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65532
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  resources:
+    requests: { cpu: 50m, memory: 32Mi }
+    limits:   { cpu: 200m, memory: 64Mi }
+  livenessProbe:
+    httpGet: { path: /healthz, port: 8080 }
+  readinessProbe:
+    httpGet: { path: /healthz, port: 8080 }
+                </code></pre>
+                <aside class="notes">
+                    Walk through each security control: non-root execution, read-only filesystem (no write attacks), capability drops (no privilege escalation), resource limits (DoS prevention), health probes (auto-recovery). Also: automountServiceAccountToken: false prevents K8s API access.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 19: SECURITY LAYERS ============== -->
+            <section>
+                <h2>Layered Security Model</h2>
+                <table>
+                    <thead><tr><th>Layer</th><th>Control</th><th>Threat Mitigated</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Image</strong></td><td>Distroless base</td><td>LotL attacks, exploit surface</td></tr>
+                        <tr><td><strong>Runtime</strong></td><td>Non-root, read-only FS</td><td>Privilege escalation, persistence</td></tr>
+                        <tr><td><strong>Capabilities</strong></td><td>Drop ALL</td><td>Kernel exploits</td></tr>
+                        <tr><td><strong>Resources</strong></td><td>CPU/memory limits</td><td>Resource exhaustion / DoS</td></tr>
+                        <tr><td><strong>Network</strong></td><td>ClusterIP (internal)</td><td>Direct external access</td></tr>
+                        <tr><td><strong>Identity</strong></td><td>SA token disabled</td><td>K8s API lateral movement</td></tr>
+                        <tr><td><strong>Supply Chain</strong></td><td>cosign signatures</td><td>Image tampering</td></tr>
+                    </tbody>
+                </table>
+                <aside class="notes">
+                    This is the complete defense-in-depth model. Each layer addresses a distinct threat vector. No single layer is sufficient — the combination creates a much higher bar for attackers.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 20: TAKEAWAYS SECTION ============== -->
+            <section data-background-color="#00c853">
+                <h2 style="color: #1a1a2e; font-size: 2.2em;">6. Key Takeaways</h2>
+                <aside class="notes">
+                    Final section.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 21: KEY TAKEAWAYS ============== -->
+            <section>
+                <h2>What We Proved</h2>
+                <ol style="font-size: 0.7em;">
+                    <li><strong>CVE reduction is architectural, not procedural.</strong><br>
+                        Removing the OS eliminates 100% of OS-level vulnerabilities — no patching required.</li>
+                    <li><strong>Smaller images = faster scaling.</strong><br>
+                        26 MB pulls 69× faster than 1.8 GB during node autoscaling events.</li>
+                    <li><strong>Supply chain trust is verifiable.</strong><br>
+                        SBOM + cosign creates a cryptographic proof chain from build to deploy.</li>
+                    <li><strong>Security is a design property, not a bolt-on feature.</strong><br>
+                        Distroless + K8s hardening creates defense-in-depth by default.</li>
+                </ol>
+                <aside class="notes">
+                    Summarize the four key messages. These align directly with Chainguard's value proposition to customers.
+                </aside>
+            </section>
+
+            <!-- ============== SLIDE 22: Q&A ============== -->
+            <section data-background-color="#1a1a2e">
+                <h2 style="color: white; font-size: 2em;">Questions?</h2>
+                <br>
+                <p style="color: #aaa; font-size: 0.7em;">Ready for live walkthrough and discussion</p>
+                <br>
+                <div style="text-align: center;">
+                    <span style="color: #00c853; font-size: 0.6em;">Topics: Security best practices • Supply chain considerations • K8s security • Operational challenges</span>
+                </div>
+                <aside class="notes">
+                    Open for Q&A. Be prepared to discuss: (1) How would this look in a CI/CD pipeline? (2) What about dynamic languages like Python/Ruby? (3) How does Chainguard handle CVE SLAs? (4) Policy enforcement with sigstore/cosign in admission controllers.
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/notes/notes.min.js"></script>
+
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+            transition: 'slide',
+            transitionSpeed: 'default',
+            plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+        });
+    </script>
+</body>
+</html>

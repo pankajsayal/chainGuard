@@ -1,0 +1,34 @@
+# Dockerfile.single (The "Bad" Baseline - Single Stage)
+# Deliberately uses the full Go SDK image as runtime to demonstrate
+# the bloat and attack surface of non-optimized container builds.
+FROM golang:1.25
+
+LABEL org.opencontainers.image.title="go-app-single"
+LABEL org.opencontainers.image.description="Single-stage baseline — full Go SDK as runtime (intentionally insecure for comparison)"
+LABEL org.opencontainers.image.authors="Pankaj"
+
+WORKDIR /app
+
+# Copy dependency definitions and download them
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the actual application source code
+COPY . .
+
+# Build the application binary
+RUN go build -o hello-app .
+
+# Run as non-root user
+RUN useradd -u 65532 -m nonroot
+USER nonroot
+
+# Expose the standard web port
+EXPOSE 8080
+
+# Health check using curl (available in full SDK image)
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD curl -f http://localhost:8080/healthz || exit 1
+
+# Run the bloated container
+ENTRYPOINT ["./hello-app"]

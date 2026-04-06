@@ -1,0 +1,32 @@
+# Dockerfile.alpine (Multi-stage with Alpine runtime)
+# Uses multi-stage build to separate SDK from runtime.
+# Alpine is minimal but still includes a shell and package manager.
+FROM golang:1.25 AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+# Optimized build: static binary, stripped symbols
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+RUN go build -ldflags="-s -w" -o hello-app .
+
+# Final stage: Alpine (still has apk and /bin/sh)
+FROM alpine:3.21
+
+LABEL org.opencontainers.image.title="go-app-alpine"
+LABEL org.opencontainers.image.description="Multi-stage build with Alpine runtime — reduced but non-zero attack surface"
+LABEL org.opencontainers.image.authors="Pankaj"
+
+RUN adduser -D -u 65532 nonroot
+WORKDIR /app
+COPY --from=builder /app/hello-app .
+
+USER nonroot
+EXPOSE 8080
+
+# Health check using wget (Alpine has no curl but has wget via busybox)
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -qO- http://localhost:8080/healthz || exit 1
+
+ENTRYPOINT ["./hello-app"]

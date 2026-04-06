@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-go-app
+  labels:
+    app: secure-go-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: secure-go-app
+  template:
+    metadata:
+      labels:
+        app: secure-go-app
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: go-app
+        image: go-app-chainguard:v1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        # Health probes — critical for production reliability
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+        # Resource boundaries — prevents unbounded consumption (DoS vector)
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 200m
+            memory: 64Mi
+        # Security hardening — defense-in-depth
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secure-go-app-service
+spec:
+  selector:
+    app: secure-go-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

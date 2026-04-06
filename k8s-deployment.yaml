@@ -18,7 +18,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: go-app
-        image: go-app-chainguard:v1
+        image: go-app-chainguard:v2
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
